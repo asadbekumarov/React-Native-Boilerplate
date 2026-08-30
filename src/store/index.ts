@@ -1,13 +1,9 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { coreApi } from './api';
-
-export const store = configureStore({
-  reducer: {
-    [coreApi.reducerPath]: coreApi.reducer,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(coreApi.middleware),
-});
-
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+/**
+ * Store Barrel File
+ * 
+ * Barcha Zustand store'larni shu yerdan import qilish mumkin.
+ * Redux olib tashlandi — endi faqat Zustand ishlatiladi.
+ */
+export { useThemeStore } from './useThemeStore';
+export { useAuthStore } from './useAuthStore';
+export { useAppStore } from './useAppStore';

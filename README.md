@@ -8,11 +8,14 @@ Ushbu boilerplate'ning asosiy maqsadi — barcha zamonaviy asboblarni (tools) o'
 
 ## 🛠 Asosiy Texnologiyalar (Core Tech Stack)
 
-- **Freymvork:** Expo (SDK 56) va fayllarga asoslangan routing uchun **Expo Router**.
-- **Ma'lumotlar bilan ishlash (Data Fetching):** **RTK Query (Redux Toolkit)** (Kesh va API so'rovlarini boshqarish uchun professional vosita).
-- **Holatni boshqarish (State Management):** **Zustand** (yengil global holatlar uchun) va **Redux Toolkit** (API va keng miqyosli holatlar uchun).
+- **Freymvork:** Expo (SDK 57) va fayllarga asoslangan routing uchun **Expo Router**.
+- **Server Holatini Boshqarish (Data Fetching):** **TanStack Query (React Query)** — server holatini boshqarish, keshlash va avtomatik qayta so'rov yuborish uchun zamonaviy yechim. **Axios** asosidagi API klient bilan birgalikda ishlaydi.
+- **Holatni boshqarish (State Management):** **Zustand** — yengil va tezkor global holatlar uchun (Theme, Auth va boshqalar).
 - **Ma'lumotlarni saqlash (Storage):** **react-native-mmkv** (juda tezkor sinxron xotira). U **expo-secure-store** orqali shifrlanadi.
 - **Stillashtirish (Styling):** **NativeWind v4** (React Native uchun Tailwind CSS) — barcha platformalarda bir xil ishlovchi dizayn tizimi.
+- **Toast/Bildirishnomalar:** **sonner-native** — zamonaviy, animatsiyali toast tizimi. Reanimated asosida ishlaydi.
+- **Carousel:** **react-native-reanimated-carousel** — Reanimated asosidagi yuqori samarali (performant) carousel komponenti.
+- **Formalar:** **React Hook Form + Zod** — forma boshqaruvi va sxema asosidagi validatsiya tizimi.
 
 ---
 
@@ -20,18 +23,37 @@ Ushbu boilerplate'ning asosiy maqsadi — barcha zamonaviy asboblarni (tools) o'
 
 ```text
 src/
-├── app/               # Expo Router sahifalari va layoutlari (_layout.tsx va boshqalar)
-├── core/              # Loyihaning asosiy poydevori (Core qatlami)
-│   └── storage/       # Lokal xotira moduli (MMKV + SecureStore shifrlash bilan)
-├── store/             # Global holatni boshqarish (Zustand va Redux Store)
-│   ├── api.ts         # RTK Query asosi va interceptorlar (Reauth logic)
-│   ├── index.ts       # Redux store konfiguratsiyasi
-│   └── useThemeStore.ts # Zustand asosidagi theme holati
-└── features/          # (Ixtiyoriy) Funksiyalar bo'yicha papkalar (alohida komponent va hooklar)
+├── app/                    # Expo Router sahifalari va layoutlari (_layout.tsx va boshqalar)
+├── core/                   # Loyihaning asosiy poydevori (Core qatlami)
+│   ├── api/                # API klient va konfiguratsiya
+│   │   ├── client.ts       # Axios instance + interceptorlar (Reauth logic)
+│   │   ├── queryClient.ts  # TanStack Query konfiguratsiyasi
+│   │   └── socket.ts       # WebSocket xizmati
+│   ├── storage/            # Lokal xotira moduli (MMKV + SecureStore shifrlash bilan)
+│   └── toast.ts            # Toast wrapper (sonner-native)
+├── store/                  # Global holatni boshqarish (Zustand)
+│   ├── index.ts            # Barrel export fayli
+│   ├── useThemeStore.ts    # Theme holati
+│   ├── useAuthStore.ts     # Autentifikatsiya holati
+│   └── useAppStore.ts      # Ilova umumiy holati
+├── shared/                 # Qayta ishlatiladigan resurslar
+│   ├── ui/                 # UI komponentlar
+│   │   ├── AppCarousel.tsx # Carousel wrapper (reanimated-carousel)
+│   │   ├── FormInput.tsx   # React Hook Form input
+│   │   └── FormButton.tsx  # Qayta ishlatiladigan tugma
+│   ├── lib/                # Umumiy kutubxonalar
+│   │   └── validation/     # Zod validatsiya sxemalari
+│   │       └── loginSchema.ts
+│   ├── components/         # Tizim komponentlari (ErrorBoundary, NoInternet)
+│   ├── hooks/              # Qayta ishlatiladigan hook'lar
+│   ├── types/              # TypeScript turlari
+│   └── utils/              # Yordamchi funksiyalar
+└── features/               # (Ixtiyoriy) Funksiyalar bo'yicha papkalar
 ```
 
-- **`core`**: Dasturning butun ishlashiga mas'ul bo'lgan, asosan bir marta yoziladigan va kamdan-kam o'zgartiriladigan arxitektura qatlami (Xotira).
-- **`store`**: Foydalanuvchining global holatlari (Theme, User data) va RTK Query API kesh tizimi saqlanadi.
+- **`core`**: Dasturning butun ishlashiga mas'ul bo'lgan, asosan bir marta yoziladigan va kamdan-kam o'zgartiriladigan arxitektura qatlami (API klient, Xotira, Toast).
+- **`store`**: Foydalanuvchining global holatlari (Theme, Auth, App) Zustand orqali boshqariladi.
+- **`shared`**: Qayta ishlatiladigan UI komponentlar, hook'lar, validatsiya sxemalari va yordamchi funksiyalar.
 - **`app`**: Ilovaning sahifalari va navigatsiya tizimi joylashgan papka.
 
 ---
@@ -50,11 +72,97 @@ src/
 - Dastur birinchi marta ishga tushganda avtomatik ravishda shifrlash kaliti (encryption key) yaratadi va uni qurilmaning o'ta xavfsiz qismida (**Expo SecureStore**) saqlab qo'yadi. So'ng, ushbu kalit orqali butun MMKV xotirasini shifrlaydi.
 - **Web uchun moslashtirilgan**: Agar ilova veb-brauzerda ochilsa, shifrlash avtomatik o'chiriladi, chunki veb-platformada MMKV shifrlashni to'g'ridan-to'g'ri qo'llab-quvvatlamaydi (shu orqali xatoliklarning oldi olingan).
 
-### 3. Aqlli API Klient (RTK Query Refresh Token Mantiqi)
-`src/store/api.ts` faylida joylashgan.
-- Kesh va API so'rovlarni avtomatik muvofiqlashtirish uchun **RTK Query** dan foydalanadi.
-- Barcha so'rovlarga avtomatik tarzda `Authorization: Bearer <token>` ni qo'shib yuboradi.
-- **Global `baseQueryWithReauth` Interceptor**: Agar serverdan `401 Unauthorized` (Token eskirgan) xatosi kelsa, klient darhol ushbu so'rovni to'xtatib turadi, `/auth/refresh` manziliga murojaat qilib yangi token oladi, uni MMKV xotirasiga saqlaydi va uzilib qolgan eski so'rovni foydalanuvchiga bildirmasdan qayta amalga oshiradi.
+### 3. Aqlli API Klient (TanStack Query + Axios Interceptor)
+`src/core/api/client.ts` va `src/core/api/queryClient.ts` fayllarida joylashgan.
+
+Eski **RTK Query** yondashuvi o'rniga endi **TanStack Query + Axios** kombinatsiyasi ishlatiladi:
+- **Axios interceptor** barcha so'rovlarga avtomatik tarzda `Authorization: Bearer <token>` ni qo'shib yuboradi.
+- **401 Unauthorized** xatosi kelganda, interceptor avtomatik ravishda `/auth/refresh` ga murojaat qilib yangi token oladi va so'rovni qayta yuboradi.
+- **Bir vaqtda bir nechta so'rov** 401 xatosiga uchrasa, faqat bitta refresh so'rovi yuboriladi va boshqa so'rovlar navbatga qo'yiladi.
+- Refresh muvaffaqiyatsiz bo'lganda, **`useAuthStore.getState().logout()`** chaqiriladi — bu ham MMKV xotirasini, ham Zustand holatini bir vaqtda tozalaydi.
+
+```typescript
+// TanStack Query bilan ishlatish namunasi:
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { apiClient } from '@/core/api/client';
+
+// Ma'lumot olish
+export const useUsers = () => useQuery({
+  queryKey: ['users'],
+  queryFn: () => apiClient.get('/users').then(res => res.data),
+});
+
+// Ma'lumot yuborish
+export const useCreateUser = () => useMutation({
+  mutationFn: (newUser: CreateUserDto) => apiClient.post('/users', newUser),
+});
+```
+
+### 4. 🔔 Zamonaviy Toast Tizimi (sonner-native)
+`src/core/toast.ts` wrapper fayli orqali ishlatiladi.
+
+**sonner-native** — React Native uchun zamonaviy, animatsiyali toast kutubxonasi. U `react-native-reanimated` asosida ishlaydi va silliq animatsiyalarni ta'minlaydi.
+
+- NativeWind theme'imiz (light/dark/custom) ga avtomatik moslashadi
+- Wrapper pattern orqali kelajakda kutubxona almashtirilsa faqat bitta faylni o'zgartirish kifoya
+
+```typescript
+// Istalgan komponentda ishlatish:
+import { toast } from '@/core/toast';
+
+// Oddiy toast
+toast('Xabar yuborildi!');
+
+// Muvaffaqiyat toast
+toast.success('Saqlandi!', { description: 'Ma\'lumotlar muvaffaqiyatli saqlandi' });
+
+// Xato toast
+toast.error('Xatolik!', { description: 'Internet aloqasini tekshiring' });
+```
+
+### 5. 🎠 Carousel Komponenti (react-native-reanimated-carousel)
+`src/shared/ui/AppCarousel.tsx` faylida joylashgan.
+
+TypeScript generic wrapper orqali istalgan ma'lumot massivi bilan ishlaydi. Ichki pagination dots NativeWind bilan stillashtirilgan.
+
+```tsx
+import { AppCarousel } from '@/shared/ui/AppCarousel';
+
+const images = [
+  { id: 1, uri: 'https://example.com/1.jpg' },
+  { id: 2, uri: 'https://example.com/2.jpg' },
+];
+
+<AppCarousel
+  data={images}
+  renderItem={({ item }) => (
+    <Image source={{ uri: item.uri }} style={{ flex: 1 }} />
+  )}
+  autoPlay
+  height={250}
+/>
+```
+
+### 6. 📝 Forma Validatsiyasi (React Hook Form + Zod)
+`src/shared/ui/FormInput.tsx`, `src/shared/ui/FormButton.tsx` va `src/shared/lib/validation/` fayllarida joylashgan.
+
+**React Hook Form** forma holatini boshqaradi, **Zod** esa sxema asosidagi validatsiyani ta'minlaydi. Qayta ishlatiladigan `FormInput` va `FormButton` komponentlari NativeWind bilan stillashtirilgan.
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, LoginFormData } from '@/shared/lib/validation/loginSchema';
+import { FormInput } from '@/shared/ui/FormInput';
+import { FormButton } from '@/shared/ui/FormButton';
+
+const { control, handleSubmit } = useForm<LoginFormData>({
+  resolver: zodResolver(loginSchema),
+});
+
+<FormInput control={control} name="email" label="Email" placeholder="email@example.com" />
+<FormInput control={control} name="password" label="Parol" secureTextEntry />
+<FormButton title="Kirish" onPress={handleSubmit(onSubmit)} />
+```
 
 ---
 
@@ -80,4 +188,4 @@ npx expo start --clear
 - Android Emulator'ni ochish uchun `a` tugmasini bosing.
 - Veb brauzerda ochish uchun `w` tugmasini bosing.
 
-Oмад! 🎉
+Omad! 🎉
