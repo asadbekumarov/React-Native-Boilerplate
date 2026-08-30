@@ -1,24 +1,16 @@
-# TempExpoApp
-
-TempExpoApp — bu React Native va Expo Router asosida qurilgan zamonaviy, tezkor va masshtablashga tayyor (scalable) mobil ilova shabloni (boilerplate). U o'z ichiga xavfsiz avtorizatsiya, mavzularni almashtirish, ko'p tillilik, ma'lumotlarni kesh qilish va boy UI komponentlarini oladi.
-
-**📱 Expo:** `~57.0.18` | **⚛️ React Native:** `0.86.3` | **📘 TypeScript:** `~6.0.3` | **📄 License:** `MIT`
-
----
-
 ## ✨ Xususiyatlar (Features)
 
-✅ **Expo Router** orqali faylga asoslangan (file-based) routing
-✅ **Zustand & MMKV** bilan juda tezkor State va Storage boshqaruvi
-✅ **JWT Auth Flow** — 401 xatoliklarni ushlab avtomatik token refresh qilish
-✅ **TanStack Query** (React Query) — ma'lumotlarni kesh qilish va sinxronlash
-✅ **Kengaytirilgan Theme Tizimi** — Light, Dark, System va Custom mavzular (Tailwind CSS / NativeWind)
-✅ **Ko'p Tillilik (i18n)** — O'zbek, Rus va Ingliz tillarini qo'llab-quvvatlash
-✅ **UI Komponentlar** — tayyor Bottom Sheet, Carousel, Form elementlar
-✅ **Validatsiya** — React Hook Form + Zod orqali formalarni oson boshqarish
-✅ **Bildirishnomalar** — `sonner-native` orqali zamonaviy toast xabarlar
-✅ **Kod Sifati** — ESLint, Prettier va Husky pre-commit hook'lari o'rnatilgan
-✅ **Reactotron** — holat, API va xatoliklarni qulay debugging qilish uchun ulangan
+✅ **Expo Router** orqali faylga asoslangan (file-based) routing ✅ **Zustand &
+MMKV** bilan juda tezkor State va Storage boshqaruvi ✅ **JWT Auth Flow** — 401
+xatoliklarni ushlab avtomatik token refresh qilish ✅ **TanStack Query** (React
+Query) — ma'lumotlarni kesh qilish va sinxronlash ✅ **Kengaytirilgan Theme
+Tizimi** — Light, Dark, System va Custom mavzular (Tailwind CSS / NativeWind) ✅
+**Ko'p Tillilik (i18n)** — O'zbek, Rus va Ingliz tillarini qo'llab-quvvatlash ✅
+**UI Komponentlar** — tayyor Bottom Sheet, Carousel, Form elementlar ✅
+**Validatsiya** — React Hook Form + Zod orqali formalarni oson boshqarish ✅
+**Bildirishnomalar** — `sonner-native` orqali zamonaviy toast xabarlar ✅ **Kod
+Sifati** — ESLint, Prettier va Husky pre-commit hook'lari o'rnatilgan ✅
+**Reactotron** — holat, API va xatoliklarni qulay debugging qilish uchun ulangan
 
 ---
 
@@ -64,16 +56,6 @@ src/
     └── useAppStore.ts
 ```
 
----
-
-## 🚀 Boshlash (Getting Started)
-
-### Talablar
-
-- Node.js (v18 yoki undan yuqori)
-- npm yoki yarn
-- Expo CLI va Expo Go (mobil qurilmada sinash uchun)
-
 ### O'rnatish qadamlari
 
 1. Loyihani yuklab oling:
@@ -109,22 +91,29 @@ npm run ios       # iOS simulyatori uchun
 
 ## 🔑 Auth Flow
 
-Loyihada xavfsiz avtorizatsiya va avtomatik token refresh jarayoni yo'lga qo'yilgan.
+Loyihada xavfsiz avtorizatsiya va avtomatik token refresh jarayoni yo'lga
+qo'yilgan.
 
 **Qanday ishlaydi?**
 
-1. Ilova ochilganda `src/app/_layout.tsx` dagi `checkAuth()` funksiyasi ishga tushib, MMKV'dan tokenni tekshiradi.
-2. Agar foydalanuvchi tizimga kirmagan bo'lsa va himoyalangan (protected) sahifaga o'tishga urinsa, u `(auth)` guruhiga yo'naltiriladi.
-3. Muvaffaqiyatli login qilingandan so'ng `useAuthStore` holatni yangilaydi va `(app)` sahifasiga o'tkazadi.
-4. Agar biron-bir API so'rovi `401 Unauthorized` xatosini qaytarsa, `src/core/api/client.ts` dagi interceptor avtomatik ravishda `/auth/refresh` manziliga `refresh_token` ni yuborib tokenni yangilaydi.
+1. Ilova ochilganda `src/app/_layout.tsx` dagi `checkAuth()` funksiyasi ishga
+   tushib, MMKV'dan tokenni tekshiradi.
+2. Agar foydalanuvchi tizimga kirmagan bo'lsa va himoyalangan (protected)
+   sahifaga o'tishga urinsa, u `(auth)` guruhiga yo'naltiriladi.
+3. Muvaffaqiyatli login qilingandan so'ng `useAuthStore` holatni yangilaydi va
+   `(app)` sahifasiga o'tkazadi.
+4. Agar biron-bir API so'rovi `401 Unauthorized` xatosini qaytarsa,
+   `src/core/api/client.ts` dagi interceptor avtomatik ravishda `/auth/refresh`
+   manziliga `refresh_token` ni yuborib tokenni yangilaydi.
 5. Yangilash o'xshamasa, foydalanuvchi tizimdan to'liq chiqariladi (`logout()`).
 
 ---
 
 ## 🎨 Theme Tizimi
 
-Ilovada Light, Dark va qo'shimcha Custom temalar mavjud bo'lib, NativeWind va Zustand orqali boshqariladi.
-Mavjud temalar: `light`, `dark`, `system`, `custom_green`, `custom_blue`.
+Ilovada Light, Dark va qo'shimcha Custom temalar mavjud bo'lib, NativeWind va
+Zustand orqali boshqariladi. Mavjud temalar: `light`, `dark`, `system`,
+`custom_green`, `custom_blue`.
 
 **Qanday almashtiriladi?**
 
@@ -142,7 +131,9 @@ export const SettingsScreen = () => {
 
 ## 📡 API va Ma'lumotlar bilan ishlash
 
-Biz Axios va TanStack Query'dan birgalikda foydalanamiz. Axios token qo'shish va yangilashni o'z bo'yniga oladi, React Query esa kesh qilish va loading holatlarini nazorat qiladi.
+Biz Axios va TanStack Query'dan birgalikda foydalanamiz. Axios token qo'shish va
+yangilashni o'z bo'yniga oladi, React Query esa kesh qilish va loading
+holatlarini nazorat qiladi.
 
 ```tsx
 import { useQuery } from '@tanstack/react-query';
@@ -164,13 +155,15 @@ export const useUserProfile = () => {
 
 ## 🌍 Ko'p Tillilik (i18n)
 
-Ilova standart holatda `uz` (O'zbek), `en` (Ingliz) va `ru` (Rus) tillarini qo'llab-quvvatlaydi. Sozlamalar `src/core/i18n/index.ts` da joylashgan. Tanlangan til MMKV orqali saqlanib qolinadi.
+Ilova standart holatda `uz` (O'zbek), `en` (Ingliz) va `ru` (Rus) tillarini
+qo'llab-quvvatlaydi. Sozlamalar `src/core/i18n/index.ts` da joylashgan.
+Tanlangan til MMKV orqali saqlanib qolinadi.
 
 **Ishlatish namunasi:**
 
 ```tsx
 import { useTranslation } from 'react-i18next';
-import { Text, Button } from 'react-native';
+import { Button, Text } from 'react-native';
 import { StorageWrapper } from '@/core/storage';
 
 export const Welcome = () => {
@@ -194,7 +187,8 @@ export const Welcome = () => {
 
 ## 🧩 Qayta Ishlatiladigan Komponentlar
 
-Loyiha tayyor UI qismlariga boy. Barcha tayyor komponentlar `src/shared/ui/` papkasida.
+Loyiha tayyor UI qismlariga boy. Barcha tayyor komponentlar `src/shared/ui/`
+papkasida.
 
 **AppBottomSheet**
 
@@ -244,7 +238,8 @@ const { control, handleSubmit } = useForm();
 
 ## 🧪 Kod Sifati
 
-Loyihada xatoliklarni oldini olish uchun Prettier va ESLint o'rnatilgan. Husky pre-commit hook orqali kommit qilishdan oldin kodlar tekshiriladi.
+Loyihada xatoliklarni oldini olish uchun Prettier va ESLint o'rnatilgan. Husky
+pre-commit hook orqali kommit qilishdan oldin kodlar tekshiriladi.
 
 - **Lint tekshiruvi:**
   ```bash
@@ -263,21 +258,7 @@ Ushbu shablon asosan quyidagilarni qo'llab-quvvatlaydi:
 
 - **Android:** To'liq moslashtirilgan (`npm run android`)
 - **iOS:** To'liq moslashtirilgan (`npm run ios`)
-- **Web:** Expo Web orqali qo'llab-quvvatlanadi (`npm run web`), biroq ba'zi native kutubxonalar qo'shimcha moslashtirish talab qilishi mumkin.
+- **Web:** Expo Web orqali qo'llab-quvvatlanadi (`npm run web`), biroq ba'zi
+  native kutubxonalar qo'shimcha moslashtirish talab qilishi mumkin.
 
 ---
-
-## 🤝 Hissa Qo'shish (Contributing)
-
-Agar loyihaga yangilik kiritmoqchi bo'lsangiz, quyidagi qoidalarga rioya qiling:
-
-1. Asosiy `main` branch'dan yangi branch yarating: `git checkout -b feature/yangi-funksiya` yoki `bugfix/xatoni-tuzatish`.
-2. Commit yozishda aniq va tushunarli xabar yozing.
-3. Pre-commit hook tekshiruvlaridan muvaffaqiyatli o'tganiga ishonch hosil qiling.
-4. O'zgarishlarni tekshirgandan so'ng, Pull Request oching.
-
----
-
-## 📄 Litsenziya
-
-Ushbu loyiha [MIT](LICENSE) litsenziyasi ostida tarqatiladi. Qo'shimcha ma'lumot uchun `LICENSE` fayli bilan tanishing.
