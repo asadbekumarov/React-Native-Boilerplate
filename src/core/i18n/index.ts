@@ -13,7 +13,7 @@ const resources = {
   ru: { translation: ru },
 };
 
-const initI18n = async () => {
+const initI18n = () => {
   let savedLanguage = StorageWrapper.getItemString('language');
 
   if (!savedLanguage) {

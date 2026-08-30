@@ -1,6 +1,8 @@
 import { createMMKV } from 'react-native-mmkv';
 import * as SecureStore from 'expo-secure-store';
 
+import { Platform } from 'react-native';
+
 const SECURE_STORE_KEY = 'mmkv.encryption.key';
 
 // 1. We check if an encryption key exists in SecureStore
@@ -11,13 +13,15 @@ const SECURE_STORE_KEY = 'mmkv.encryption.key';
 const getEncryptionKey = (): string => {
   try {
     let key = SecureStore.getItem(SECURE_STORE_KEY);
-    
+
     if (!key) {
       // Generate a random key (in production, use a more robust random string generator if needed)
-      key = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      key =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
       SecureStore.setItem(SECURE_STORE_KEY, key);
     }
-    
+
     return key;
   } catch (error) {
     console.error('SecureStore Error:', error);
@@ -25,33 +29,49 @@ const getEncryptionKey = (): string => {
   }
 };
 
-import { Platform } from 'react-native';
-
 const encryptionKey = Platform.OS === 'web' ? undefined : getEncryptionKey();
 
 export const storage = createMMKV({
   id: 'universal-storage',
-  ...(encryptionKey ? { encryptionKey } : {})
+  ...(encryptionKey ? { encryptionKey } : {}),
 });
 
 export const StorageWrapper = {
   setItem: (key: string, value: string | boolean | number) => {
-    storage.set(key, value);
+    try {
+      storage.set(key, value);
+    } catch (e) {}
   },
   getItemString: (key: string): string | undefined => {
-    return storage.getString(key);
+    try {
+      return storage.getString(key);
+    } catch (e) {
+      return undefined;
+    }
   },
   getItemBoolean: (key: string): boolean | undefined => {
-    return storage.getBoolean(key);
+    try {
+      return storage.getBoolean(key);
+    } catch (e) {
+      return undefined;
+    }
   },
   getItemNumber: (key: string): number | undefined => {
-    return storage.getNumber(key);
+    try {
+      return storage.getNumber(key);
+    } catch (e) {
+      return undefined;
+    }
   },
   removeItem: (key: string) => {
-    storage.remove(key);
+    try {
+      storage.remove(key);
+    } catch (e) {}
   },
   clearAll: () => {
-    storage.clearAll();
+    try {
+      storage.clearAll();
+    } catch (e) {}
   },
   // If you absolutely need to store something purely in SecureStore (e.g., highly sensitive biometric fallback)
   setHighlySecureItem: async (key: string, value: string) => {
@@ -59,5 +79,5 @@ export const StorageWrapper = {
   },
   getHighlySecureItem: async (key: string) => {
     return await SecureStore.getItemAsync(key);
-  }
+  },
 };
