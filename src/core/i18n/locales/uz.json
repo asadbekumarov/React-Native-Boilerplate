@@ -1,0 +1,16 @@
+{
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik yuz berdi"
+  },
+  "auth": {
+    "login": "Kirish",
+    "email": "Email",
+    "password": "Parol",
+    "welcome": "Xush kelibsiz 👋",
+    "login_desc": "Hisobingizga kirish uchun ma'lumotlarni kiriting"
+  },
+  "onboarding": {
+    "title": "Xush kelibsiz"
+  }
+}

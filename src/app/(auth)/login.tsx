@@ -1,13 +1,29 @@
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema, LoginFormData } from '@/shared/lib/validation/loginSchema';
+import {
+  loginSchema,
+  LoginFormData,
+} from '@/shared/lib/validation/loginSchema';
 import { FormInput } from '@/shared/ui/FormInput';
 import { FormButton } from '@/shared/ui/FormButton';
 import { toast } from '@/core/toast';
+import { useAuthStore } from '@/store/useAuthStore';
 
-export default function HomeScreen() {
-  const { control, handleSubmit, formState: { isSubmitting } } = useForm<LoginFormData>({
+export default function LoginScreen() {
+  const setUser = useAuthStore((state) => state.setUser);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
@@ -16,11 +32,13 @@ export default function HomeScreen() {
   });
 
   const onSubmit = (data: LoginFormData) => {
-    // Namuna: muvaffaqiyatli login toast
-    toast.success('Muvaffaqiyatli!', {
-      description: `${data.email} bilan kirish amalga oshirildi`,
-    });
-    console.log('Login data:', data);
+    // Fake login logic
+    setTimeout(() => {
+      setUser({ id: '1', name: 'Test User', email: data.email });
+      toast.success('Muvaffaqiyatli!', {
+        description: `${data.email} bilan kirish amalga oshirildi`,
+      });
+    }, 1000);
   };
 
   return (
@@ -34,11 +52,11 @@ export default function HomeScreen() {
       >
         <View className="flex-1 justify-center px-6 bg-background">
           <View className="mb-8">
-            <Text className="text-foreground text-3xl font-bold mb-2">
-              Xush kelibsiz 👋
+            <Text className="text-4xl font-bold text-foreground mb-2">
+              Kirish
             </Text>
-            <Text className="text-secondary text-base">
-              Hisobingizga kirish uchun ma'lumotlarni kiriting
+            <Text className="text-lg text-secondary">
+              Tizimga kirish uchun ma&apos;lumotlarni kiriting
             </Text>
           </View>
 
