@@ -60,10 +60,17 @@ export default function RootLayout() {
 
     const inAuthGroup = (segments[0] as string) === '(auth)';
 
-    if (!isAuthenticated && !inAuthGroup) {
-      // User is not authenticated, but trying to access protected routes -> send to login
-      router.replace('/(auth)/login' as any);
-    } else if (isAuthenticated && inAuthGroup) {
+    /*
+      // Agar ilovangizda majburiy avtorizatsiya kerak bo'lsa (hamma ekranlar yopiq bo'lsa),
+      // quyidagi kodni izohdan (commentdan) chiqaring:
+      
+      if (!isAuthenticated && !inAuthGroup) {
+        // User is not authenticated, but trying to access protected routes -> send to login
+        router.replace('/(auth)/login' as any);
+      } else
+    */
+
+    if (isAuthenticated && inAuthGroup) {
       // User is authenticated, but in auth screens -> send to app root
       router.replace('/');
     }
